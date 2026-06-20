@@ -72,7 +72,7 @@ jobs:
                   tmpfile = f.name
               result = subprocess.run(
                   ['mmdc', '-i', tmpfile, '-o', '/tmp/out.svg',
-                   '--puppeteer-config', '/tmp/puppeteer-config.json'],
+                   '-p', '/tmp/puppeteer-config.json'],
                   capture_output=True)
               os.unlink(tmpfile)
               if result.returncode != 0:

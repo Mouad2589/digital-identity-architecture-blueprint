@@ -19,3 +19,6 @@ MD012:
 
 # GitHub PR/issue templates and CONTRIBUTING files legitimately start with H2
 MD041: false
+
+# Allow blank lines between consecutive blockquotes (README tagline + disclaimer)
+MD028: false
