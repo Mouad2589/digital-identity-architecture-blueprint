@@ -23,3 +23,15 @@ node_modules/
 # Logs
 *.log
 logs/
+docs/context.html
+docs/interoperability.html
+docs/modules.html
+docs/operational-view.html
+docs/roadmap.html
+docs/security-model.html
+README.html
+.github/pull_request_template.html
+.github/ISSUE_TEMPLATE/architecture-improvement.html
+.github/ISSUE_TEMPLATE/documentation-issue.html
+docs/decisions/ADR-0002-identity-assurance-level-strategy.html
+docs/decisions/ADR-0003-biometric-data-isolation.html

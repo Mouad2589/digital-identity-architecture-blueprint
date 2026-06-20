@@ -78,11 +78,20 @@ This repository is not intended to be a full production system. It is a public a
 
 ## 9. Evolution roadmap
 
-- [ ] Add a first complete architecture decision record.
-- [ ] Add one detailed diagram per major module or flow.
-- [ ] Add implementation examples when relevant.
-- [ ] Add a security checklist.
-- [ ] Add an operational readiness checklist.
+- [x] ADR-0001: public repository scope.
+- [x] ADR-0002: identity assurance level strategy.
+- [x] ADR-0003: biometric data isolation architecture.
+- [x] C4 context diagram.
+- [x] C4 container diagram.
+- [x] Module-level documentation with design concerns.
+- [x] Security model: IAM, RBAC+ABAC, data protection, threat model.
+- [x] Interoperability: protocols, gateway architecture, API design principles.
+- [x] Operational view: SLO/SLI, incident management, backup/recovery.
+- [ ] Sequence diagram: enrollment flow (operator-assisted).
+- [ ] Sequence diagram: citizen authentication flow (OIDC + step-up).
+- [ ] STRIDE threat model for the enrollment flow.
+- [ ] OpenAPI spec for the identity verification endpoint.
+- [ ] Case study or LinkedIn article linking to this repository.
 
 ## 10. Related repositories
 
