@@ -26,19 +26,23 @@ Key challenges:
 ## Context diagram
 
 ```mermaid
-C4Context
-    title System Context — Digital Identity Platform
-    Person(citizen, "Citizen", "Requests identity document or accesses services")
-    Person(operator, "Enrollment Operator", "Captures biographic and biometric data")
-    System(idp, "Digital Identity Platform", "Core system: enrollment, identity management, document issuance")
-    System_Ext(govServices, "Public Services", "Tax, health, benefits, elections APIs")
-    System_Ext(siem, "SIEM / SOC", "Security monitoring and incident response")
-    System_Ext(idp_ext, "External IdP / eIDAS node", "Cross-border identity federation")
-    Rel(citizen, idp, "Enrolls, authenticates, requests document")
-    Rel(operator, idp, "Captures and validates data")
-    Rel(idp, govServices, "Provides identity verification")
-    Rel(idp, siem, "Streams audit and security events")
-    Rel(idp, idp_ext, "Federates identity (eIDAS)")
+flowchart TB
+    Citizen(["👤 Citizen\nRequests document\nor accesses services"])
+    Operator(["👤 Enrollment Operator\nCaptures biographic\n& biometric data"])
+
+    subgraph Platform["Digital Identity Platform"]
+        Core["Identity Core\nEnrollment · Lifecycle\nDocument Issuance"]
+    end
+
+    GovServices["Public Services\nTax · Health · Benefits"]
+    SIEM["SIEM / SOC\nSecurity Monitoring"]
+    eIDAS["External IdP / eIDAS\nCross-border Federation"]
+
+    Citizen -->|"Enrolls, authenticates,\nrequests document"| Core
+    Operator -->|"Captures and\nvalidates data"| Core
+    Core -->|"Identity verification"| GovServices
+    Core -->|"Audit & security events"| SIEM
+    Core -->|"Federated identity"| eIDAS
 ```
 
 ## Key quality attributes

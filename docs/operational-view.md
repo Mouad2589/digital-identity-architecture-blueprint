@@ -15,37 +15,36 @@ A digital identity platform is critical national infrastructure. Operational con
 
 ```mermaid
 flowchart TB
-    subgraph Region A - Primary
-        LB_A[Load Balancer]
-        App_A1[App Node 1]
-        App_A2[App Node 2]
-        DB_A[(Primary DB)]
-        Cache_A[(Cache)]
+    subgraph RegionA["Region A — Primary"]
+        LB_A["Load Balancer"]
+        App_A1["App Node 1"]
+        App_A2["App Node 2"]
+        DB_A[("Primary DB")]
+        Cache_A[("Cache")]
     end
 
-    subgraph Region B - DR
-        LB_B[Load Balancer]
-        App_B1[App Node 1]
-        DB_B[(Replica DB)]
-        Cache_B[(Cache)]
+    subgraph RegionB["Region B — DR"]
+        LB_B["Load Balancer"]
+        App_B1["App Node 1"]
+        DB_B[("Replica DB")]
     end
 
-    subgraph Shared Services
-        SIEM[SIEM / SOC]
-        ObsStack[Observability Stack]
-        SecretMgmt[Secrets Management]
-        Registry[Container Registry]
+    subgraph SharedSvc["Shared Services"]
+        SIEM["SIEM / SOC"]
+        ObsStack["Observability Stack"]
+        SecretMgmt["Secrets Management"]
     end
 
-    Users --> LB_A
+    Users(["Users"]) --> LB_A
     LB_A --> App_A1
     LB_A --> App_A2
     App_A1 --> DB_A
     App_A1 --> Cache_A
-    DB_A -->|replication| DB_B
-    LB_A -.->|failover| LB_B
+    DB_A -->|"replication"| DB_B
+    LB_A -.->|"failover"| LB_B
     App_A1 --> ObsStack
     App_A1 --> SIEM
+    App_A1 --> SecretMgmt
 ```
 
 ---

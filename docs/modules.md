@@ -5,62 +5,65 @@
 The container diagram shows the major deployable units of the platform, their responsibilities and their relationships.
 
 ```mermaid
-C4Container
-    title Container Diagram — Digital Identity Platform
+flowchart TB
+    Citizen(["👤 Citizen"])
+    Operator(["👤 Operator"])
+    Admin(["👤 Admin"])
 
-    Person(citizen, "Citizen", "Accesses portal, requests documents")
-    Person(operator, "Enrollment Operator", "Captures biographic and biometric data")
-    Person(admin, "System Administrator", "Manages platform configuration and incidents")
+    subgraph Channels["Channels"]
+        Portal["Self-Service Portal\nReact SPA"]
+        EnrollStation["Enrollment Station\n.NET App"]
+    end
 
-    System_Boundary(idp, "Digital Identity Platform") {
-        Container(portal, "Self-Service Portal", "React SPA / HTTPS", "Citizen-facing web interface")
-        Container(enrollStation, "Enrollment Station App", ".NET / WPF or web", "Operator-assisted data capture")
-        Container(apiGateway, "API Gateway", "NGINX / Kong", "Rate limiting, auth enforcement, routing")
-        Container(identityApi, "Identity API", "ASP.NET Core / .NET 9", "Commands and queries for identity lifecycle")
-        Container(workflowSvc, "Workflow Service", "ASP.NET Core", "Case management and approval orchestration")
-        Container(issuanceSvc, "Document Issuance Service", "ASP.NET Core", "Generates digital and physical document orders")
-        Container(notificationSvc, "Notification Service", "ASP.NET Core", "Email, SMS and push notifications")
-        Container(biometricVault, "Biometric Vault", "ASP.NET Core (isolated)", "Template storage, 1:1 verify, 1:N dedup")
-        Container(auditStore, "Audit Store", "Append-only PostgreSQL schema", "Tamper-evident operation log")
-        ContainerDb(identityDb, "Identity Database", "PostgreSQL 16", "Identity records, outbox, workflow state")
-        ContainerDb(biometricDb, "Biometric Database", "PostgreSQL 16 (isolated)", "Encrypted biometric templates")
-        ContainerDb(cache, "Cache", "Redis 7", "Session data, idempotency keys, rate limit counters")
-        Container(obsStack, "Observability Stack", "OpenTelemetry / Grafana / Prometheus / Loki", "Logs, metrics, traces")
-        Container(interopGw, "Interoperability Gateway", "ASP.NET Core", "OIDC/SAML/VC provider for external consumers")
-    }
+    subgraph Gateway["Gateway"]
+        APIGW["API Gateway\nNGINX / Kong"]
+        InteropGW["Interoperability GW\nOIDC · SAML · VC"]
+    end
 
-    System_Ext(govServices, "Public Services", "Tax, health, benefits APIs")
-    System_Ext(siem, "SIEM / SOC", "Security monitoring")
-    System_Ext(printFacility, "Secure Print Facility", "Physical document personalisation")
-    System_Ext(eidasNode, "eIDAS Node / EUDI Wallet", "Cross-border identity federation")
+    subgraph CoreServices["Core Services"]
+        IdentityAPI["Identity API\nASP.NET Core"]
+        WorkflowSvc["Workflow Service"]
+        IssuanceSvc["Document Issuance"]
+        NotifSvc["Notification Service"]
+    end
 
-    Rel(citizen, portal, "Uses", "HTTPS")
-    Rel(operator, enrollStation, "Uses", "HTTPS")
-    Rel(admin, apiGateway, "Manages via admin API", "HTTPS + MFA")
+    subgraph DataStores["Data Stores"]
+        IdentityDB[("Identity DB\nPostgreSQL")]
+        Cache[("Cache\nRedis")]
+        AuditStore[("Audit Store\nAppend-only")]
+    end
 
-    Rel(portal, apiGateway, "API calls", "HTTPS")
-    Rel(enrollStation, apiGateway, "API calls", "HTTPS + mTLS")
-    Rel(apiGateway, identityApi, "Routes requests", "HTTP / internal")
-    Rel(apiGateway, interopGw, "Routes OIDC/SAML", "HTTP / internal")
+    subgraph Isolated["Isolated Zone"]
+        BioVault["Biometric Vault\nASP.NET Core"]
+        BioDB[("Biometric DB\nEncrypted")]
+    end
 
-    Rel(identityApi, identityDb, "Reads / writes", "TCP")
-    Rel(identityApi, cache, "Cache reads/writes", "TCP")
-    Rel(identityApi, biometricVault, "Enroll / verify", "mTLS")
-    Rel(identityApi, workflowSvc, "Triggers workflow", "async / outbox")
-    Rel(identityApi, auditStore, "Writes audit events", "TCP / outbox")
-    Rel(identityApi, obsStack, "Logs, metrics, traces", "OTLP")
+    ObsStack["Observability\nOTel · Grafana · Loki"]
+    GovServices["Public Services"]
+    SIEM["SIEM / SOC"]
+    PrintFacility["Secure Print"]
+    eIDAS["eIDAS / EUDI"]
 
-    Rel(workflowSvc, identityDb, "Reads / writes workflow state", "TCP")
-    Rel(workflowSvc, issuanceSvc, "Triggers issuance on approval", "async")
-    Rel(workflowSvc, notificationSvc, "Sends notifications", "async")
-
-    Rel(biometricVault, biometricDb, "Encrypted templates", "TCP")
-    Rel(issuanceSvc, printFacility, "Sends personalisation data", "HTTPS")
-
-    Rel(interopGw, govServices, "Provides identity verification", "HTTPS")
-    Rel(interopGw, eidasNode, "Cross-border federation", "HTTPS / SAML")
-
-    Rel(auditStore, siem, "Streams events", "Syslog / TCP")
+    Citizen --> Portal
+    Operator --> EnrollStation
+    Admin --> APIGW
+    Portal --> APIGW
+    EnrollStation --> APIGW
+    APIGW --> IdentityAPI
+    APIGW --> InteropGW
+    IdentityAPI --> IdentityDB
+    IdentityAPI --> Cache
+    IdentityAPI --> AuditStore
+    IdentityAPI --> BioVault
+    IdentityAPI --> WorkflowSvc
+    IdentityAPI --> ObsStack
+    WorkflowSvc --> IssuanceSvc
+    WorkflowSvc --> NotifSvc
+    BioVault --> BioDB
+    IssuanceSvc --> PrintFacility
+    InteropGW --> GovServices
+    InteropGW --> eIDAS
+    AuditStore --> SIEM
 ```
 
 ---
