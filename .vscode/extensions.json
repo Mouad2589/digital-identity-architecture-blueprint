@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "bierner.markdown-mermaid",
+    "davidanson.vscode-markdownlint",
+    "github.vscode-github-actions"
+  ]
+}

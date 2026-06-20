@@ -1,0 +1,25 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Secrets
+.env
+.env.*
+*.pfx
+*.key
+*.pem
+secrets.*
+
+# Build outputs
+bin/
+obj/
+dist/
+build/
+node_modules/
+
+# Logs
+*.log
+logs/
