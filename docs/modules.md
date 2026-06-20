@@ -108,10 +108,12 @@ flowchart TB
 **Responsibility:** Capture, validate and submit identity data for a new enrollment request.
 
 **Key flows:**
+
 - Operator-assisted capture (in-person): biographic data entry + biometric capture (fingerprint, face, iris).
 - Online pre-enrollment: citizen submits supporting documents and personal data; operator validates in person.
 
 **Design concerns:**
+
 - Idempotent submission — prevent duplicate enrollment for the same identity.
 - Step-based workflow with explicit state machine (started → pending validation → approved / rejected).
 - Offline-capable enrollment stations with sync-on-reconnect.
@@ -123,12 +125,14 @@ flowchart TB
 **Responsibility:** Maintain the authoritative identity record, its lifecycle and its relationships.
 
 **Key entities:**
+
 - `Identity` — unique citizen record with stable national identifier.
 - `IdentityStatus` — active, suspended, revoked, deceased.
 - `BiographicData` — civil registry attributes.
 - `BiometricReference` — tokenized reference (never stored in clear).
 
 **Key operations:**
+
 - Create / update / suspend / revoke identity.
 - Deduplicate against existing records (biographic + biometric matching).
 - Emit domain events on status change (for audit and downstream integration).
@@ -140,6 +144,7 @@ flowchart TB
 **Responsibility:** Biometric capture quality check, template extraction and 1:1 verification / 1:N deduplication.
 
 **Design concerns:**
+
 - Strict separation: biometric vault is isolated from the rest of the system.
 - Biometric data is never returned raw; only match score and decision are exposed.
 - SDK integration abstracted behind an interface to allow algorithm provider replacement.
@@ -151,6 +156,7 @@ flowchart TB
 **Responsibility:** Orchestrate multi-step enrollment and issuance processes with human approval gates.
 
 **Patterns used:**
+
 - State machine per case type (enrollment, renewal, correction, revocation).
 - Task assignment to operators with SLA tracking.
 - Escalation rules when SLA is breached.
@@ -162,6 +168,7 @@ flowchart TB
 **Responsibility:** Record all sensitive operations in a tamper-evident, queryable audit log.
 
 **Design concerns:**
+
 - Write-only append log; no update or delete operations allowed.
 - Each event includes: timestamp, actor, operation, entity reference, outcome, correlation ID.
 - Supports legal retention policies and regulatory export.
@@ -173,6 +180,7 @@ flowchart TB
 **Responsibility:** Generate and deliver identity documents (ID card, passport, digital credential) upon workflow approval.
 
 **Key flows:**
+
 - Physical document: generate personalization data → send to secure print facility → track delivery.
 - Digital credential: generate W3C Verifiable Credential or mobile driving licence (ISO 18013-5).
 

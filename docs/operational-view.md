@@ -83,6 +83,7 @@ flowchart TB
 | P4 — Low | Minor issue | Next sprint | UI glitch, non-critical warning |
 
 ### On-call and escalation
+
 - Primary on-call: platform engineer.
 - Escalation path: lead engineer → CTO → vendor support.
 - Post-incident review (PIR) mandatory for P1 and P2 within 48 hours.

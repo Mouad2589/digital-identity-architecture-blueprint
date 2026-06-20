@@ -9,6 +9,7 @@ Accepted
 A digital identity platform serves operations with vastly different risk profiles: reading public information requires minimal assurance, while signing a legal document or accessing medical records requires high assurance. Using a single assurance level for all operations either over-secures low-risk flows (degrading UX) or under-secures high-risk flows (creating unacceptable exposure).
 
 The platform must align with internationally recognised frameworks:
+
 - **NIST SP 800-63-3** defines three Identity Assurance Levels (IAL1, IAL2, IAL3) and Authentication Assurance Levels (AAL1, AAL2, AAL3).
 - **eIDAS 2.0** defines Low, Substantial, and High assurance levels.
 

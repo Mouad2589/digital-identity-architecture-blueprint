@@ -59,6 +59,7 @@ jobs:
 
       - name: Extract and validate Mermaid blocks
         run: |
+          echo '{"args":["--no-sandbox","--disable-setuid-sandbox"]}' > /tmp/puppeteer-config.json
           find . -name "*.md" -not -path "./.git/*" | while read file; do
             python3 - <<'PYEOF' "$file"
           import sys, re, subprocess, tempfile, os
@@ -69,7 +70,10 @@ jobs:
               with tempfile.NamedTemporaryFile(suffix='.mmd', mode='w', delete=False) as f:
                   f.write(block)
                   tmpfile = f.name
-              result = subprocess.run(['mmdc', '-i', tmpfile, '-o', '/tmp/out.svg'], capture_output=True)
+              result = subprocess.run(
+                  ['mmdc', '-i', tmpfile, '-o', '/tmp/out.svg',
+                   '--puppeteer-config', '/tmp/puppeteer-config.json'],
+                  capture_output=True)
               os.unlink(tmpfile)
               if result.returncode != 0:
                   print(f"::error file={sys.argv[1]}::Invalid Mermaid block #{i+1}")

@@ -64,9 +64,11 @@ flowchart LR
 ## Key integration patterns
 
 ### Attribute release policy
+
 Only the minimum set of identity attributes required by a relying party is released (data minimisation). Attribute release is governed by a policy matrix per service and per assurance level.
 
 ### Consent management
+
 For services that require explicit citizen consent, the platform provides a consent screen and stores consent records with timestamp, scope, and relying party reference.
 
 ### Assurance levels
@@ -78,6 +80,7 @@ For services that require explicit citizen consent, the platform provides a cons
 | High (LoA 3) | In-person + biometric verification | Legal acts, critical services |
 
 ### Error handling and fault isolation
+
 - Downstream service failure does not degrade core identity verification.
 - Timeouts, circuit breakers and fallback responses are defined per integration.
 - All external calls are logged with correlation IDs for cross-system tracing.

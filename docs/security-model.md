@@ -53,6 +53,7 @@ flowchart LR
 | API tokens | Short-lived (< 15 min), rotated, stored hashed |
 
 **Key management:**
+
 - Dedicated HSM or cloud KMS for key operations.
 - Key rotation on a defined schedule.
 - Separation between data encryption keys (DEK) and key encryption keys (KEK).

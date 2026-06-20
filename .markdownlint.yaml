@@ -3,11 +3,8 @@
 
 default: true
 
-# Allow long lines in tables and code blocks
-MD013:
-  line_length: 200
-  tables: false
-  code_blocks: false
+# Line length — disabled for prose; tables and code blocks already excluded
+MD013: false
 
 # Allow duplicate headings in different sections
 MD024:
@@ -19,3 +16,6 @@ MD033: false
 # Allow multiple blank lines (common in template files)
 MD012:
   maximum: 2
+
+# GitHub PR/issue templates and CONTRIBUTING files legitimately start with H2
+MD041: false

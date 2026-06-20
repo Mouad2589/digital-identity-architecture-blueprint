@@ -9,6 +9,7 @@ Accepted
 Biometric data (fingerprints, facial images, iris scans) is among the most sensitive personal data that exists. Unlike passwords, biometric characteristics cannot be changed if compromised. This creates irreversible privacy harm.
 
 Several regulatory and security requirements apply:
+
 - GDPR Article 9 classifies biometric data as **special category data** requiring explicit legal basis and elevated protection.
 - The risk of a breach is existential to the platform's trust — a biometric database breach cannot be mitigated by resetting credentials.
 - Biometric matching algorithms must be upgradeable without migrating the entire identity database.
@@ -39,7 +40,7 @@ Biometric data is stored and processed in a **dedicated, network-isolated Biomet
 
 ### Deployment diagram
 
-```
+```text
 ┌─────────────────────────────────────┐
 │  Application Zone                   │
 │  ┌─────────────┐                    │

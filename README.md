@@ -2,6 +2,8 @@
 
 > Public portfolio repository by **Mouad SAINDOU** — Engineering Leader focused on Digital Identity, eGovernment, Critical Systems and .NET platforms.
 
+> **Disclaimer** — This public blueprint formalises the architecture principles I advocate for this type of system: separation of concerns, strong traceability, audit, operational resilience and granular access control. The technical elements presented here reflect architectural practices and principles I defend, not the specifications of any production system.
+
 ## 1. Context
 
 This repository is part of a public GitHub portfolio designed to demonstrate architecture thinking, delivery maturity and engineering leadership without exposing private or sensitive systems.
