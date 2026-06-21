@@ -121,6 +121,44 @@ flowchart TB
 - Step-based workflow with explicit state machine (started → pending validation → approved / rejected).
 - Offline-capable enrollment stations with sync-on-reconnect.
 
+### Enrollment flow — sequence diagram
+
+```mermaid
+sequenceDiagram
+    actor Operator
+    participant Station as Enrollment Station
+    participant API as Identity API
+    participant Dedup as Biometric Vault
+    participant Workflow as Workflow Service
+    participant Audit as Audit Store
+    participant Notif as Notification Service
+
+    Operator->>Station: Start enrollment session
+    Station->>Station: Capture biographic data
+    Station->>Station: Capture biometric (fingerprint + face)
+    Station->>API: POST /enrollments (biographic + biometric ref)
+
+    API->>API: Validate input (schema + business rules)
+    API->>Dedup: Deduplicate(biometricCapture)
+    Dedup-->>API: No match found
+
+    API->>API: Create Identity (PendingVerification)
+    API->>Audit: Log EnrollmentSubmitted
+    API->>Workflow: CreateCase(enrollmentId)
+    API-->>Station: 202 Accepted — enrollmentId
+
+    Workflow->>Workflow: Assign case to supervisor
+    Workflow->>Notif: Notify supervisor (new case)
+
+    Note over Workflow: Supervisor reviews and approves
+
+    Workflow->>API: ApproveEnrollment(enrollmentId)
+    API->>API: Activate Identity
+    API->>Audit: Log IdentityActivated
+    API->>Notif: Notify citizen (identity ready)
+    API-->>Workflow: Confirmed
+```
+
 ---
 
 ## Identity Core

@@ -1,0 +1,11 @@
+# CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# All files — default owner
+* @Mouad2589
+
+# Architecture decisions require explicit review
+docs/decisions/ @Mouad2589
+
+# Security policy requires explicit review
+SECURITY.md @Mouad2589

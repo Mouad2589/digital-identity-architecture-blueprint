@@ -18,7 +18,7 @@
 - [ ] ADR-0004: Cross-border federation approach (eIDAS 2.0).
 - [ ] OpenAPI specification for the identity verification endpoint.
 - [ ] Detailed C4 container diagram for Identity Core.
-- [ ] Detailed sequence diagram: enrollment flow (operator-assisted).
+- [x] Detailed sequence diagram: enrollment flow (operator-assisted).
 - [ ] Detailed sequence diagram: citizen authentication flow (OIDC).
 - [ ] Detailed sequence diagram: document issuance flow.
 - [ ] STRIDE threat model for the enrollment flow.

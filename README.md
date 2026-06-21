@@ -1,5 +1,8 @@
 # Digital Identity Architecture Blueprint
 
+[![CI](https://github.com/Mouad2589/digital-identity-architecture-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/Mouad2589/digital-identity-architecture-blueprint/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 > Public portfolio repository by **Mouad SAINDOU** — Engineering Leader focused on Digital Identity, eGovernment, Critical Systems and .NET platforms.
 
 > **Disclaimer** — This public blueprint formalises the architecture principles I advocate for this type of system: separation of concerns, strong traceability, audit, operational resilience and granular access control. The technical elements presented here reflect architectural practices and principles I defend, not the specifications of any production system.
