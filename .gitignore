@@ -35,3 +35,5 @@ README.html
 .github/ISSUE_TEMPLATE/documentation-issue.html
 docs/decisions/ADR-0002-identity-assurance-level-strategy.html
 docs/decisions/ADR-0003-biometric-data-isolation.html
+docs/offline-first-design.html
+docs/ecvrs-module.html

@@ -9,6 +9,7 @@ flowchart TB
     Citizen(["👤 Citizen"])
     Operator(["👤 Operator"])
     Admin(["👤 Admin"])
+    VHW(["👤 Village Health Worker\nField Registrar"])
 
     subgraph Channels["Channels"]
         Portal["Self-Service Portal\nReact SPA"]
@@ -38,6 +39,15 @@ flowchart TB
         BioDB[("Biometric DB\nEncrypted")]
     end
 
+    subgraph eCVRS["eCVRS — Civil Registration"]
+        FieldApp["Field Registration App\nOffline-first · Android / iOS"]
+        SyncEngine["Sync Engine\nBackground Worker"]
+        CivEngine["Civil Registration Engine\nEvent Processor"]
+        PopReg[("Population Registry\nPostgreSQL")]
+    end
+
+    EventBus["Event Bus\nBirthRegistered · DeathRegistered"]
+
     ObsStack["Observability\nOTel · Grafana · Loki"]
     GovServices["Public Services"]
     SIEM["SIEM / SOC"]
@@ -47,23 +57,34 @@ flowchart TB
     Citizen --> Portal
     Operator --> EnrollStation
     Admin --> APIGW
+    VHW --> FieldApp
+
     Portal --> APIGW
     EnrollStation --> APIGW
     APIGW --> IdentityAPI
     APIGW --> InteropGW
+
     IdentityAPI --> IdentityDB
     IdentityAPI --> Cache
     IdentityAPI --> AuditStore
     IdentityAPI --> BioVault
     IdentityAPI --> WorkflowSvc
     IdentityAPI --> ObsStack
+
     WorkflowSvc --> IssuanceSvc
     WorkflowSvc --> NotifSvc
     BioVault --> BioDB
+
     IssuanceSvc --> PrintFacility
     InteropGW --> GovServices
     InteropGW --> eIDAS
     AuditStore --> SIEM
+
+    FieldApp --> SyncEngine
+    SyncEngine -.->|"Sync when connected"| CivEngine
+    CivEngine --> PopReg
+    CivEngine --> EventBus
+    EventBus -.->|"BirthRegistered / DeathRegistered"| IdentityAPI
 ```
 
 ---
@@ -76,20 +97,27 @@ flowchart TB
         Portal[Self-Service Portal]
         EnrollStation[Enrollment Station]
         MobileApp[Mobile App]
+        FieldApp[eCVRS Field App\nOffline-first]
+    end
+
+    subgraph CivilReg["Civil Registration — eCVRS"]
+        CivEngine[Civil Registration Engine]
+        PopRegistry[(Population Registry)]
     end
 
     subgraph Core
         EnrollModule[Enrollment Module]
         IdentityCore[Identity Core]
         BiometricsSvc[Biometric Services]
-        WorkflowEngine[Workflow & Case Management]
-        AuditModule[Audit & Traceability]
+        WorkflowEngine[Workflow and Case Management]
+        AuditModule[Audit and Traceability]
         DocumentIssuance[Document Issuance]
     end
 
     subgraph Integration
         InteropGW[Interoperability Gateway]
         NotificationSvc[Notification Service]
+        EventBus[Event Bus]
     end
 
     Portal --> IdentityCore
@@ -102,6 +130,11 @@ flowchart TB
     IdentityCore --> DocumentIssuance
     IdentityCore --> InteropGW
     WorkflowEngine --> NotificationSvc
+
+    FieldApp --> CivEngine
+    CivEngine --> PopRegistry
+    CivEngine --> EventBus
+    EventBus --> IdentityCore
 ```
 
 ---
@@ -232,3 +265,26 @@ sequenceDiagram
 **Responsibility:** Expose identity verification capabilities to authorized external consumers.
 
 See [interoperability.md](interoperability.md) for details.
+
+---
+
+## eCVRS — Electronic Civil and Vital Registration System
+
+**Responsibility:** Record vital events (birth, death, marriage) and maintain the authoritative population registry that underpins all digital identity services.
+
+**Key flows:**
+
+- Offline birth registration in the field — village health worker on tablet, zero connectivity, instant local confirmation.
+- Death registration triggering automatic identity revocation in the National Identity Platform.
+- Late registration workflow for previously unregistered adults with elevated supervisor review.
+
+**Design concerns:**
+
+- Offline-first by design — full operation with zero connectivity; sync when connected.
+- Immutable, signed event log — each event signed with device PKI key at the moment of capture.
+- Eventual consistency — population registry updated asynchronously after sync; no central round-trip required for local confirmation.
+- CRDT-based conflict resolution — no silent merges; ambiguous concurrent edits routed to supervisor review queue.
+- Offline-verifiable certificates — Ed25519-signed QR codes; key manifest cached on verifier devices.
+- Four connectivity tiers explicitly supported: HTTPS sync (Tier 3/2), SMS batch (Tier 1), physical USB/SD transport (Tier 0).
+
+See [ecvrs-module.md](ecvrs-module.md) for full module documentation, [offline-first-design.md](offline-first-design.md) for the sync and resilience architecture, and [ADR-0004](decisions/ADR-0004-ecvrs-civil-registration-integration.md) / [ADR-0005](decisions/ADR-0005-offline-first-architecture-low-connectivity.md) / [ADR-0006](decisions/ADR-0006-crdt-sync-conflict-resolution.md) for the architectural decisions.
